@@ -1,4 +1,6 @@
 from tkinter import *   
+import pygame
+from pygame.locals import *
 import tkinter as Tkinter
 from math import cos, sin
 from time import sleep, gmtime
@@ -11,10 +13,14 @@ win = Tk()
 win.geometry("1024x600")
 win.title("Time Counter")
 
-p = multiprocessing.Process(target=playsound, args=('alarm.mp3'))
+pygame.mixer.init()
+pygame.mixer.music.load('alarm.mp3')
 
 stop_sound = False
 sound = False
+
+label1 = Label(win, text = "Sound Alarm is OFF")
+label1.place(x=70,y=400)
 
 def stop_mp3():
     global stop_sound
@@ -29,19 +35,19 @@ def play():
 def sound_ON():
     global sound
     sound = True
+    label1 = Label(win, text = "Sound Alarm is ON")
+    label1.place(x=70,y=400)
 
 def sound_OFF():
     global sound
     sound = False
+    label1 = Label(win, text = "Sound Alarm is OFF")
+    label1.place(x=70,y=400)
 
 sound_button = Button(win, text='Sound ON', bd='5', command = sound_ON)
 sound_button.place(x = 70, y = 300)
 sound_button2 = Button(win, text='Sound OFF', bd='5', command = sound_OFF)
 sound_button2.place(x = 70, y = 350)
-
-def sound_trigger():
-    turn_sound = Button(win, text='Stop Sound', bd='7' , command = p.terminate())
-    turn_sound.place(x = 70, y = 400)
 
 hour=StringVar()
 minute=StringVar()
@@ -82,12 +88,13 @@ def submit():
             second.set("{0:2d}".format(secs))
             win.update()
             sleep(1)
+            
+            temp -= 1
+
             if (temp == 0):
                 if (sound):
-                    p.start()
-                    sound_trigger()
+                    pygame.mixer.music.play()
                 messagebox.showinfo("Time Countdown", "Time's up ")
-            temp -= 1
         else:
             btn.wait_variable(wait)
 
@@ -150,16 +157,6 @@ can1 = Canvas(win, bg="burlywood1", height=500, width=500)
 can1.pack()
 
 HORLOGE1(250, 250, 200)
-
-pb2 = Progressbar(
-    win,
-    orient = HORIZONTAL,
-    length = 75,
-    mode = 'indeterminate'
-    )
-
-pb2.place(x=20, y=550)
-pb2.start(3)
 
 win.mainloop()
 win.destroy()
