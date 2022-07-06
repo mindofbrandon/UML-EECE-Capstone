@@ -43,13 +43,25 @@ secondEntry.place(x=180,y=20)
   
 running = False
 wait = True
+
+progress = Progressbar(win, orient = HORIZONTAL, length = 100, mode = 'determinate')
+
+progress.pack(pady = 10)
+progress.place(x = 70, y = 300)
+
 def submit():
+    import time
     try:
         # the input provided by the user is
         # stored in here :temp
         temp = int(hour.get())*3600 + int(minute.get())*60 + int(second.get())
     except:
         print("Please input the right value")
+
+    progress['value'] = 0
+    win.update_idletasks()
+    increment = 100 / temp
+
     while temp > -1:
 
         if running:
@@ -86,6 +98,8 @@ def submit():
             # after every one sec the value of temp will be decremented
             # by one
             temp -= 1
+            progress['value'] += increment
+            win.update_idletasks()
         else:
             btn.wait_variable(wait)
 
