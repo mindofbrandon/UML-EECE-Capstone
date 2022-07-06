@@ -75,7 +75,7 @@ wait = True
 progress = Progressbar(win, orient = HORIZONTAL, length = 100, mode = 'determinate')
 
 progress.pack(pady = 10)
-progress.place(x = 70, y = 300)
+progress.place(x = 70, y = 250)
 
 def submit():
     import time
