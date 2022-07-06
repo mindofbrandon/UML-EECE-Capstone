@@ -71,11 +71,23 @@ secondEntry.place(x=180,y=20)
   
 running = False
 wait = True
+
+progress = Progressbar(win, orient = HORIZONTAL, length = 100, mode = 'determinate')
+
+progress.pack(pady = 10)
+progress.place(x = 70, y = 300)
+
 def submit():
+    import time
     try:
         temp = int(hour.get())*3600 + int(minute.get())*60 + int(second.get())
     except:
         print("Please input the right value")
+
+    progress['value'] = 0
+    win.update_idletasks()
+    increment = 100 / temp
+
     while temp > -1:
 
         if running:
@@ -95,6 +107,8 @@ def submit():
                 if (sound):
                     pygame.mixer.music.play()
                 messagebox.showinfo("Time Countdown", "Time's up ")
+            progress['value'] += increment
+            win.update_idletasks()
         else:
             btn.wait_variable(wait)
 
