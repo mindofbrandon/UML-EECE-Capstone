@@ -7,7 +7,6 @@ from time import sleep, gmtime
 from tkinter.ttk import Progressbar
 from tkinter import messagebox
 from playsound import playsound
-import multiprocessing
 
 win = Tk()
 win.geometry("1024x600")
@@ -72,20 +71,22 @@ secondEntry.place(x=180,y=20)
 running = False
 wait = True
 
-progress = Progressbar(win, orient = HORIZONTAL, length = 100, mode = 'determinate')
+progress = Progressbar(win, orient = HORIZONTAL, length = 900, mode = 'determinate')
 
 progress.pack(pady = 10)
 progress.place(x = 70, y = 250)
 
+progress['value'] = 0
+win.update_idletasks()
+
 def submit():
     import time
     try:
+        global temp
         temp = int(hour.get())*3600 + int(minute.get())*60 + int(second.get())
     except:
         print("Please input the right value")
 
-    progress['value'] = 0
-    win.update_idletasks()
     increment = 100 / temp
 
     while temp > -1:
@@ -93,22 +94,24 @@ def submit():
         if running:
             mins,secs = divmod(temp,60)
             hours=0
-            if mins >60:
+            if mins > 60:
                 hours, mins = divmod(mins, 60)
             hour.set("{0:2d}".format(hours))
             minute.set("{0:2d}".format(mins))
             second.set("{0:2d}".format(secs))
+
             win.update()
             sleep(1)
-            
-            temp -= 1
 
             if (temp == 0):
                 if (sound):
                     pygame.mixer.music.play()
-                messagebox.showinfo("Time Countdown", "Time's up ")
-            progress['value'] += increment
-            win.update_idletasks()
+                messagebox.showinfo("Time is Up!", "Time's up ")
+                progress['value'] = 0
+            else:
+                progress['value'] += increment
+                win.update_idletasks()
+            temp -= 1
         else:
             btn.wait_variable(wait)
 
@@ -127,50 +130,7 @@ btn = Button(win, text='Start', bd='5', command= start)
 btn.place(x = 70,y = 120)
 btn2 = Button(win, text='Stop', bd='5', command = stop)
 btn2.place(x = 70, y=90)
-
-def drawcircle(Alpha,Beta,Rayon,Couleur,can):
-    x1,y1,x2,y2=Alpha-Rayon, Beta-Rayon, Alpha+Rayon, Beta+Rayon
-    can.create_oval(x1,y1,x2,y2,fill=Couleur)
-
-def drawSecAig(CoordA, CoordZ, Taille, Omega, can):
-    Pi = 3.14159 
-    Omega = (Omega-15) * 6
-    can.create_line(CoordA + (Taille/1.5) * cos(Pi*(Omega/180)), CoordZ + (Taille/1.5) * sin(Pi*(Omega/180)), CoordA - (Taille/6) * cos(Pi*(Omega/180)), CoordZ - (Taille/6) * sin(Pi*(Omega/180)), fill = "red")
-
-def fondhorloge(CoordA, CoordZ, Taille, can1):
-    Pi = 3.141592
-
-    drawcircle(CoordA, CoordZ, Taille, "ivory3",can1)
-    drawcircle(CoordA, CoordZ, Taille/80, "ivory3",can1)
-    can1.create_line(CoordA + (Taille - (Taille/15)), CoordZ, CoordA + (Taille - (Taille/5)), CoordZ) 
-    can1.create_line(CoordA, CoordZ + (Taille - (Taille/15)), CoordA, CoordZ + (Taille - (Taille/5)))
-    can1.create_line(CoordA - (Taille - (Taille/15)), CoordZ, CoordA - (Taille - (Taille/5)), CoordZ)
-    can1.create_line(CoordA, CoordZ - (Taille - (Taille/15)), CoordA, CoordZ - (Taille - (Taille/5)))
-
-    can1.create_line(CoordA + (Taille/1.05) * cos(Pi*(30/180)), CoordZ + (Taille/1.05) * sin(Pi*(30/180)), CoordA + (Taille/1.20) * cos(Pi*(30/180)), CoordZ + (Taille/1.20) * sin(Pi*(30/180)))
-    can1.create_line(CoordA + (Taille/1.05) * cos(Pi*(60/180)), CoordZ + (Taille/1.05) * sin(Pi*(60/180)), CoordA + (Taille/1.20) * cos(Pi*(60/180)), CoordZ + (Taille/1.20) * sin(Pi*(60/180)))
-
-    can1.create_line(CoordA - (Taille/1.05) * cos(Pi*(30/180)), CoordZ - (Taille/1.05) * sin(Pi*(30/180)), CoordA - (Taille/1.20) * cos(Pi*(30/180)), CoordZ - (Taille/1.20) * sin(Pi*(30/180)))
-    can1.create_line(CoordA - (Taille/1.05) * cos(Pi*(60/180)), CoordZ - (Taille/1.05) * sin(Pi*(60/180)), CoordA - (Taille/1.20) * cos(Pi*(60/180)), CoordZ - (Taille/1.20) * sin(Pi*(60/180)))
-
-    can1.create_line(CoordA + (Taille/1.05) * cos(Pi*(30/180)), CoordZ - (Taille/1.05) * sin(Pi*(30/180)), CoordA + (Taille/1.20) * cos(Pi*(30/180)), CoordZ - (Taille/1.20) * sin(Pi*(30/180)))
-    can1.create_line(CoordA + (Taille/1.05) * cos(Pi*(60/180)), CoordZ - (Taille/1.05) * sin(Pi*(60/180)), CoordA + (Taille/1.20) * cos(Pi*(60/180)), CoordZ - (Taille/1.20) * sin(Pi*(60/180)))
-
-    can1.create_line(CoordA - (Taille/1.05) * cos(Pi*(30/180)), CoordZ + (Taille/1.05) * sin(Pi*(30/180)), CoordA - (Taille/1.20) * cos(Pi*(30/180)), CoordZ + (Taille/1.20) * sin(Pi*(30/180)))
-    can1.create_line(CoordA - (Taille/1.05) * cos(Pi*(60/180)), CoordZ + (Taille/1.05) * sin(Pi*(60/180)), CoordA - (Taille/1.20) * cos(Pi*(60/180)), CoordZ + (Taille/1.20) * sin(Pi*(60/180)))
-
-def HORLOGE1(Gamma, Pi, Epsylon):
-    fondhorloge(Gamma, Pi, Epsylon, can1)
-    patate = gmtime()
-    seconde = patate[5]
-
-    drawSecAig(Gamma, Pi, Epsylon, seconde, can1)
-    win.after(1000, lambda: HORLOGE1(250, 250, 200))
-
-can1 = Canvas(win, bg="burlywood1", height=500, width=500)
-can1.pack()
-
-HORLOGE1(250, 250, 200)
+btn2['state'] = Tkinter.NORMAL
 
 win.mainloop()
 win.destroy()
