@@ -16,7 +16,7 @@ sound = False
 
 class CircularProgressbar(object):
     def __init__(self, canvas, x0, y0, x1, y1, width=2, start_ang=0, full_extent=360.):
-        self.custom_font = tkFont.Font(family="Helvetica", size=12, weight='bold')
+        self.custom_font = tkFont.Font(family="Helvetica", size=18, weight='bold')
         self.canvas = canvas
         self.x0, self.y0, self.x1, self.y1 = x0 + width, y0 + width, x1 - width, y1 - width  # Coordinates for the circles
         self.tx, self.ty = (x1 - x0) / 2 + 150, (y1 - y0) / 2  # Coordinates for Text in middle of circles (Timer)
@@ -69,7 +69,6 @@ class CircularProgressbar(object):
                 self.stop()  # stop the progress bar from perputually running
                 if sound:
                     pygame.mixer.music.play()
-                self.canvas.after(5000,self.stop_mp3())
             self.canvas.itemconfigure(self.label_id, text=time)  # update time of
         self.canvas.after(self.interval, self.step, delta)
 
