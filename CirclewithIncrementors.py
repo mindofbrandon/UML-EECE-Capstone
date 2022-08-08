@@ -69,7 +69,8 @@ class CircularProgressbar(object):
                 if sound: ## If sound is on, play alarm if 0
                     pygame.mixer.music.play()
                     self.message=True
-                VisualTimer.startButton["state"] = ACTIVE  
+                VisualTimer.startButton["state"] = ACTIVE
+
                 self.reset()
 
             self.canvas.itemconfigure(self.label_id, text=time)  # update time of
@@ -86,6 +87,7 @@ class CircularProgressbar(object):
 
     def reset(self):
         self.extent = 0
+        VisualTimer.createWidgets()
 
     def stop_mp3(self): # Stop the alarm
         global stop_sound
@@ -144,7 +146,9 @@ class Timer(tk.Frame):  # This class creates and manages all the widgets such as
         self.startButton.grid(row=0, column=0)
         self.pauseButton = tk.Button(self, text='Pause/Resume', command=self.pause)
         self.pauseButton.grid(row=0, column=1)
-        self.quitButton = tk.Button(self, text='Quit', command=self.quit)
+        self.pauseButton["state"] = DISABLED 
+
+        self.quitButton = tk.Button(self, text='RESET', command=self.progressbar.reset)
         self.quitButton.grid(row=0, column=2)
 
         self.soundOnButton = tk.Button(self, text='Sound ON', bd='5',
@@ -197,6 +201,7 @@ class Timer(tk.Frame):  # This class creates and manages all the widgets such as
             
             if self.progressbar.running == True:  # once the start button is pressed, disable it until?...
                 self.startButton["state"] = DISABLED
+                self.pauseButton["state"] = ACTIVE 
 
             self.mainloop()
 
