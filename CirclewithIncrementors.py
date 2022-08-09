@@ -107,7 +107,7 @@ class Timer(tk.Frame):  # This class creates and manages all the widgets such as
         self.createWidgets()
 
     def createWidgets(self):
-        self.canvas = tk.Canvas(self, width=500, height=500, bg='light steel blue')
+        self.canvas = tk.Canvas(self, width=1024, height=600, bg='light steel blue')
         self.canvas.grid(row=0, column=0, columnspan=3)
 
         self.hour = 0  # initialize variables for time that will be inputted throught the entry boxes
