@@ -79,7 +79,7 @@ class CircularProgressbar(object):
                     self.message=True              
                 #VisualTimer.button_image_1["state"] = ACTIVE
                 VisualTimer.button_1["state"] = ACTIVE
-                VisualTimer.startButton["state"] = ACTIVE
+                # VisualTimer.startButton["state"] = ACTIVE
                 
                 self.reset()
                 
@@ -356,16 +356,16 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         self.mintime = self.canvas.create_text(845.0, 340.0, text=self.minute, font='Helevetica 26 bold', fill='red')
         self.sectime = self.canvas.create_text(845.0, 508.0, text=self.sec, font='Helevetica 26 bold', fill='red')
 
-        self.startButton = tk.Button(self, text='Start', bd='5',
-                                     command=self.start)  # Create start, pause, and quit button.
-        self.startButton.grid(row=0, column=0)
+        # self.startButton = tk.Button(self, text='Start', bd='5',
+        #                              command=self.start)  # Create start, pause, and quit button.
+        # self.startButton.grid(row=0, column=0)
         
-        self.pauseButton = tk.Button(self, text='Pause', command=self.pause)
-        self.pauseButton.grid(row=0, column=1)
-        self.pauseButton["state"] = DISABLED
+        # self.pauseButton = tk.Button(self, text='Pause', command=self.pause)
+        # self.pauseButton.grid(row=0, column=1)
+        # self.pauseButton["state"] = DISABLED
         
-        self.quitButton = tk.Button(self, text='RESET', command=self.progressbar.reset)
-        self.quitButton.grid(row=0, column=2)
+        # self.quitButton = tk.Button(self, text='RESET', command=self.progressbar.reset)
+        # self.quitButton.grid(row=0, column=2)
 
         # self.soundOnButton = tk.Button(self, text='Sound ON', bd='5',
         #                              command=self.sound_ON)  # Create start, pause, and quit button.
@@ -420,7 +420,7 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
                 
                 self.button_1["state"] = DISABLED
                 #self.startButton["state"] = DISABLED
-                self.pauseButton["state"] = ACTIVE
+                # self.pauseButton["state"] = ACTIVE
                 
             self.mainloop()
 
