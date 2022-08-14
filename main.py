@@ -47,7 +47,6 @@ class CircularProgressbar(object):
                                              start=self.start_ang, extent=self.extent,
                                              width=self.width, style='arc',
                                              outline="SeaGreen1")  # Create arc to fill in progressbar
-
         timer = time
 
         # 262, 50, 762, 550
@@ -77,20 +76,31 @@ class CircularProgressbar(object):
 
                 if sound: ## If sound is on, play alarm if 0
                     pygame.mixer.music.play()
-                    self.message=True
+                    self.message=True              
+                #VisualTimer.button_image_1["state"] = ACTIVE
+                VisualTimer.button_1["state"] = ACTIVE
+                VisualTimer.startButton["state"] = ACTIVE
+                
+                self.reset()
+                
             self.canvas.itemconfigure(self.label_id, text=time)  # update time of
         self.canvas.after(self.interval, self.step, delta)
 
 
 
-    def toggle_pause(
-            self):  # toggle pause by switching state to opposite state. this allows the same button to pause and unpause
+    def toggle_pause(self):  # toggle pause by switching state to opposite state. this allows the same button to pause and unpause
+        
         self.running = not self.running
 
     def stop(self):
         self.running = False
         # stops the progress bar from running
-
+        
+    def reset(self):
+        self.running = False
+        self.extent = 0
+        VisualTimer.createWidgets()
+    
     def stop_mp3(self): # Stop the alarm
         global stop_sound
         stop_sound = True
@@ -113,26 +123,27 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
         self.canvas = Canvas(
             self,
-            bg="#FFFFFF",
+            bg="light steel blue",
             height=600,
             width=1024,
-            bd=0,
-            highlightthickness=0,
-            relief="ridge"
+            # bg='red',
+            #bd=0,
+            #highlightthickness=0,
+            # relief="ridge"
         )
 
         # create start button
         self.canvas.place(x=0, y=0)
         self.button_image_1 = PhotoImage(
             file=relative_to_assets("start.png"))
-        button_1 = Button(
+        self.button_1 = Button(
             image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.start(),
             relief="flat"
         )
-        button_1.place(
+        self.button_1.place(
             x=17.0,
             y=109.0,
             width=190.0,
@@ -146,7 +157,7 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             image=self.button_image_3,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.stop(),
+            command=lambda: self.progressbar.reset(),
             relief="flat"
         )
         button_3.place(
@@ -348,9 +359,12 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         self.startButton = tk.Button(self, text='Start', bd='5',
                                      command=self.start)  # Create start, pause, and quit button.
         self.startButton.grid(row=0, column=0)
+        
         self.pauseButton = tk.Button(self, text='Pause', command=self.pause)
         self.pauseButton.grid(row=0, column=1)
-        self.quitButton = tk.Button(self, text='Quit', command=self.quit)
+        self.pauseButton["state"] = DISABLED
+        
+        self.quitButton = tk.Button(self, text='RESET', command=self.progressbar.reset)
         self.quitButton.grid(row=0, column=2)
 
         # self.soundOnButton = tk.Button(self, text='Sound ON', bd='5',
@@ -401,9 +415,13 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             interval = 1000  # 3 interval is 1 second, or 1000 Msec,
             self.progressbar.start(interval,
                                    totaltime)  # this will be sent to progressbar/start which will decrement the total time by 1 every  second.
+            
             if self.progressbar.running == True:  # once the start button is pressed, disable it until?...
-                tk.Button.grid_remove(self.startButton)
-
+                
+                self.button_1["state"] = DISABLED
+                #self.startButton["state"] = DISABLED
+                self.pauseButton["state"] = ACTIVE
+                
             self.mainloop()
 
     def sound_ON(self): #Button to turn sound on
@@ -432,7 +450,7 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
 if __name__ == '__main__':
     VisualTimer = Timer()
-    VisualTimer.configure(bg = "#FFFFFF")
+    #VisualTimer.configure(bg = "#FFFFFF")
     VisualTimer.title('Countdown!')
     VisualTimer.geometry("1024x600")
     # Remove border of the splash Window and window buttons
