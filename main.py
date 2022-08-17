@@ -353,7 +353,7 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
         if (quit_delay > 2):
             print("quit")
-            # os.system("sudo shutdown -h now")
+            os.system("sudo shutdown -h now")
 
     def hourup(self):
 
