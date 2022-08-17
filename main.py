@@ -1,4 +1,8 @@
 #!usr/bin/python
+
+# UML EECE Visual Timer Capstone Group 22-004 (Summer)
+# Authors: Russell Soto, Sarvesh Handa, Brandon Zuniga
+
 from tkinter import *
 import tkinter as tk
 import tkinter.font as tkFont
@@ -13,7 +17,7 @@ OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 pygame.mixer.init()
-pygame.mixer.music.load('alarm.mp3')
+#pygame.mixer.music.load('alarm.mp3')
 
 stop_sound = False # states to manage the sound
 sound = False #
@@ -80,10 +84,8 @@ class CircularProgressbar(object):
                 if sound: ## If sound is on, play alarm if 0
                     pygame.mixer.music.play()
                     self.message=True             
-                #VisualTimer.button_image_1["state"] = ACTIVE
-                VisualTimer.button_55["state"] = ACTIVE
-                VisualTimer.button_1["state"] = ACTIVE
-                # VisualTimer.startButton["state"] = ACTIVE
+                VisualTimer.button_icon_shutdown["state"] = ACTIVE
+                VisualTimer.button_start["state"] = ACTIVE
                 
                 self.reset()
                 
@@ -103,9 +105,9 @@ class CircularProgressbar(object):
     def reset(self):
         self.running = False
         self.extent = 0
-        VisualTimer.createWidgets()
+        VisualTimer.createWidgets() # reset the canvas
     
-    def stop_mp3(self): # Stop the alarm
+    def stop_mp3(self): # Stop the alarm sound
         global stop_sound
         stop_sound = True
 
@@ -120,7 +122,6 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
     def __init__(self, master=None):
         tk.Tk.__init__(self, master)
-        #self.grid()
         self.createWidgets()
 
     def createWidgets(self):
@@ -133,24 +134,20 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             bg="light steel blue",
             height=600,
             width=1024,
-            # bg='red',
-            #bd=0,
-            #highlightthickness=0,
-            # relief="ridge"
         )
 
         # create start button
         self.canvas.place(x=0, y=0)
-        self.button_image_1 = PhotoImage(
+        self.button_image_start = PhotoImage(
             file=relative_to_assets("start.png"))
-        self.button_1 = Button(
-            image=self.button_image_1,
+        self.button_start = Button(
+            image=self.button_image_start,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.start(),
             relief="flat"
         )
-        self.button_1.place(
+        self.button_start.place(
             x=17.0,
             y=109.0,
             width=190.0,
@@ -158,16 +155,16 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # create stop button
-        self.button_image_3 = PhotoImage(
+        self.button_image_stop = PhotoImage(
             file=relative_to_assets("stop.png"))
-        button_3 = Button(
-            image=self.button_image_3,
+        button_stop = Button(
+            image=self.button_image_stop,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.progressbar.reset(),
             relief="flat"
         )
-        button_3.place(
+        button_stop.place(
             x=17.0,
             y=178.0,
             width=190.0,
@@ -175,16 +172,16 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # create pause button
-        self.button_image_2 = PhotoImage(
+        self.button_image_pause = PhotoImage(
             file=relative_to_assets("pause.png"))
-        button_2 = Button(
-            image=self.button_image_2,
+        button_pause = Button(
+            image=self.button_image_pause,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.pause(),
             relief="flat"
         )
-        button_2.place(
+        button_pause.place(
             x=17.0,
             y=247.0,
             width=190.0,
@@ -192,17 +189,16 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # create sound on button
-
-        self.button_image_5 = PhotoImage(
+        self.button_image_sound_on = PhotoImage(
             file=relative_to_assets("sound_on.png"))
-        button_5 = Button(
-            image=self.button_image_5,
+        button_sound_on = Button(
+            image=self.button_image_sound_on,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.sound_ON(),
             relief="flat"
         )
-        button_5.place(
+        button_sound_on.place(
             x=818.0,
             y=109.0,
             width=190.0,
@@ -210,16 +206,16 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # sound off button
-        self.button_image_4 = PhotoImage(
+        self.button_image_sound_off = PhotoImage(
             file=relative_to_assets("sound_off.png"))
-        button_4 = Button(
-            image=self.button_image_4,
+        button_sound_off = Button(
+            image=self.button_image_sound_off,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.sound_OFF(),
             relief="flat"
         )
-        button_4.place(
+        button_sound_off.place(
             x=818.0,
             y=178.0,
             width=190.0,
@@ -228,26 +224,25 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
 
         # create speaker icon
-        self.image_image_3 = PhotoImage(
+        self.image_image_icon_speaker = PhotoImage(
             file=relative_to_assets("icon_speaker.png"))
-        image_3 = self.canvas.create_image(
+        image_icon_speaker = self.canvas.create_image(
             912.0,
             50.0,
-            image=self.image_image_3
+            image=self.image_image_icon_speaker
         )
 
         # mins increment button
-
-        self.button_image_11 = PhotoImage(
+        self.button_image_increment = PhotoImage(
             file=relative_to_assets("increment.png"))
-        button_11 = Button(
-            image=self.button_image_11,
+        button_increment = Button(
+            image=self.button_image_increment,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.minsup(),
             relief="flat"
         )
-        button_11.place(
+        button_increment.place(
             x=888.0,
             y=264.0,
             width=50.0,
@@ -255,25 +250,25 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # minutes entry
-        self.image_image_1 = PhotoImage(
+        self.image_minutes = PhotoImage(
             file=relative_to_assets("minutes.png"))
-        image_1 = self.canvas.create_image(
+        image_img_minutes = self.canvas.create_image(
             913.0,
             341.0,
-            image=self.image_image_1
+            image=self.image_minutes
         )
 
         # mins decrement button
-        self.button_image_9 = PhotoImage(
+        self.button_image_decrement = PhotoImage(
             file=relative_to_assets("decrement.png"))
-        button_9 = Button(
-            image=self.button_image_9,
+        button_decrement = Button(
+            image=self.button_image_decrement,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.minsdown(),
             relief="flat"
         )
-        button_9.place(
+        button_decrement.place(
             x=888.0,
             y=366.0,
             width=50.0,
@@ -281,17 +276,16 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # secs increment button
-
-        self.button_image_12 = PhotoImage(
+        self.button_image_increment_sec = PhotoImage(
             file=relative_to_assets("increment.png"))
-        button_12 = Button(
-            image=self.button_image_12,
+        button_increment_sec = Button(
+            image=self.button_image_increment_sec,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.secsup(),
             relief="flat"
         )
-        button_12.place(
+        button_increment_sec.place(
             x=888.0,
             y=430.0,
             width=50.0,
@@ -299,25 +293,25 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # seconds entry
-        self.image_image_6 = PhotoImage(
+        self.image_seconds = PhotoImage(
             file=relative_to_assets("seconds.png"))
-        image_6 = self.canvas.create_image(
+        image_img_sec = self.canvas.create_image(
             913.0,
             507.0,
-            image=self.image_image_6
+            image=self.image_seconds
         )
 
         # secs decrement button
-        self.button_image_13 = PhotoImage(
+        self.button_image_decrement_sec = PhotoImage(
             file=relative_to_assets("decrement.png"))
-        button_13 = Button(
-            image=self.button_image_13,
+        button_decrement_sec = Button(
+            image=self.button_image_decrement_sec,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.secsdown(),
             relief="flat"
         )
-        button_13.place(
+        button_decrement_sec.place(
             x=888.0,
             y=532.0,
             width=50.0,
@@ -325,45 +319,39 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         )
 
         # turn off pi 
-        self.button_image_55 = PhotoImage(
-            file=relative_to_assets("button_5.png"))
-        self.button_55 = Button(
-            image=self.button_image_55,
+        self.button_image_icon_shutdown = PhotoImage(
+            file=relative_to_assets("icon_shutdown.png"))
+        self.button_icon_shutdown = Button(
+            image=self.button_image_icon_shutdown,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: self.shutdown(),
-            relief="flat"
+            relief="flat",
+            bg="light steel blue"
         )
-        self.button_55.place(
+        self.button_icon_shutdown.place(
             x=17.0,
             y=500.0,
             width=90.0,
             height=100.0
         )
 
-
-        # self.canvas.grid(row=0, column=0, columnspan=3)
-
         self.hour = 0  # initialize variables for time that will be inputted throught the entry boxes
-
         self.minute = 0
         self.sec = 0
 
-
-
         self.progressbar = CircularProgressbar(self.canvas, 262, 50, 762, 550,20)  # this will create an empty progress bar that will not start until start is pressed.
         self.soundlabel = self.canvas.create_text(920.0, 162.0, text="Sound is OFF",font='Helevetica 18 bold',fill='red')
-
-
-        # self.hourtime = self.canvas.create_text(70, 340, text=self.hour, font='Helevetica 15 bold', fill='red')
         self.mintime = self.canvas.create_text(845.0, 340.0, text=self.minute, font='Helevetica 26 bold', fill='red')
         self.sectime = self.canvas.create_text(845.0, 508.0, text=self.sec, font='Helevetica 26 bold', fill='red')
 
-    def shutdown(self):
+
+    def shutdown(self): # shutdown the pi safely after 3 consecutive button presses
+        # if shutdown icon button is pressed, the quit counter will reset to 0
         
         global quit_delay
         quit_delay += 1
-        # print("ok ", quit_delay)
+
         if (quit_delay > 2):
             print("quit")
             # os.system("sudo shutdown -h now")
@@ -415,10 +403,9 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             
             if self.progressbar.running == True:  # once the start button is pressed, disable it until?...
                 
-                self.button_55["state"] = DISABLED
-                self.button_1["state"] = DISABLED
-                #self.startButton["state"] = DISABLED
-                # self.pauseButton["state"] = ACTIVE
+                # disable the start and shutdown button if timer is running
+                self.button_icon_shutdown["state"] = DISABLED
+                self.button_start["state"] = DISABLED
                 
             self.mainloop()
 
@@ -448,10 +435,12 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
 if __name__ == '__main__':
     VisualTimer = Timer()
-    #VisualTimer.configure(bg = "#FFFFFF")
     VisualTimer.title('Countdown!')
     VisualTimer.geometry("1024x600")
+
     # Remove border of the splash Window and window buttons
     # VisualTimer.overrideredirect(True)
+
+    # do not allow window to be resizeable
     VisualTimer.resizable(False, False)
     VisualTimer.mainloop()
