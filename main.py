@@ -12,12 +12,11 @@ from pathlib import Path
 import pygame
 import os
 from pygame.locals import *
-from playsound import playsound
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 pygame.mixer.init()
-#pygame.mixer.music.load('alarm.mp3')
+pygame.mixer.music.load('/home/admin/Downloads/UML-EECE-Capstone-guifix/alarm.mp3')
 
 stop_sound = False # states to manage the sound
 sound = False #
@@ -113,7 +112,7 @@ class CircularProgressbar(object):
 
     def play(self): #Play the alarm
         while (True):
-            playsound('alarm.mp3')
+            pygame.mixer.music.play()
             if stop_sound:
                 break
 
@@ -439,7 +438,7 @@ if __name__ == '__main__':
     VisualTimer.geometry("1024x600")
 
     # Remove border of the splash Window and window buttons
-    # VisualTimer.overrideredirect(True)
+    VisualTimer.overrideredirect(True)
 
     # do not allow window to be resizeable
     VisualTimer.resizable(False, False)
