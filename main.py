@@ -1,3 +1,4 @@
+#!usr/bin/python
 from tkinter import *
 import tkinter as tk
 import tkinter.font as tkFont
@@ -5,6 +6,7 @@ import tkinter.ttk as ttk
 from tkinter import messagebox
 from pathlib import Path
 import pygame
+import os
 from pygame.locals import *
 from playsound import playsound
 OUTPUT_PATH = Path(__file__).parent
@@ -15,6 +17,7 @@ pygame.mixer.music.load('alarm.mp3')
 
 stop_sound = False # states to manage the sound
 sound = False #
+quit_delay = 0
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -76,8 +79,9 @@ class CircularProgressbar(object):
 
                 if sound: ## If sound is on, play alarm if 0
                     pygame.mixer.music.play()
-                    self.message=True              
+                    self.message=True             
                 #VisualTimer.button_image_1["state"] = ACTIVE
+                VisualTimer.button_55["state"] = ACTIVE
                 VisualTimer.button_1["state"] = ACTIVE
                 # VisualTimer.startButton["state"] = ACTIVE
                 
@@ -120,7 +124,10 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         self.createWidgets()
 
     def createWidgets(self):
-
+        
+        global quit_delay
+        quit_delay = 0
+        
         self.canvas = Canvas(
             self,
             bg="light steel blue",
@@ -317,7 +324,22 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             height=47.0
         )
 
-
+        # turn off pi 
+        self.button_image_55 = PhotoImage(
+            file=relative_to_assets("button_5.png"))
+        self.button_55 = Button(
+            image=self.button_image_55,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: self.shutdown(),
+            relief="flat"
+        )
+        self.button_55.place(
+            x=17.0,
+            y=500.0,
+            width=90.0,
+            height=100.0
+        )
 
 
         # self.canvas.grid(row=0, column=0, columnspan=3)
@@ -329,25 +351,6 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
 
 
 
-        # self.hrup = tk.Button(self, text='Hour up', bd='5',
-        #                              command=self.hourup)
-        # self.hrup.place(x=40,y=300)  ## Used .place instead of grid because grid would allow boxes only at the very bottom of page.
-        # self.hrdown = tk.Button(self, text='Hour down', bd='5',
-        #                       command=self.hourdown)
-        # self.hrdown.place(x=40,y=370)
-        # self.minup = tk.Button(self, text='Mins up', bd='5',
-        #                      command=self.minsup)
-        # self.minup.place(x=240,y=300)
-        # self.mindown = tk.Button(self, text='Mins down', bd='5',
-        #                         command=self.minsdown)
-        # self.mindown.place(x=240, y=370)
-        # self.secup = tk.Button(self, text='Sec up', bd='5',
-        #                        command=self.secsup)
-        # self.secup.place(x=440,y=300)
-        # self.secdown = tk.Button(self, text='Secs up', bd='5',
-        #                          command=self.secsdown)
-        # self.secdown.place(x=440, y=370)
-
         self.progressbar = CircularProgressbar(self.canvas, 262, 50, 762, 550,20)  # this will create an empty progress bar that will not start until start is pressed.
         self.soundlabel = self.canvas.create_text(920.0, 162.0, text="Sound is OFF",font='Helevetica 18 bold',fill='red')
 
@@ -356,23 +359,14 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         self.mintime = self.canvas.create_text(845.0, 340.0, text=self.minute, font='Helevetica 26 bold', fill='red')
         self.sectime = self.canvas.create_text(845.0, 508.0, text=self.sec, font='Helevetica 26 bold', fill='red')
 
-        # self.startButton = tk.Button(self, text='Start', bd='5',
-        #                              command=self.start)  # Create start, pause, and quit button.
-        # self.startButton.grid(row=0, column=0)
+    def shutdown(self):
         
-        # self.pauseButton = tk.Button(self, text='Pause', command=self.pause)
-        # self.pauseButton.grid(row=0, column=1)
-        # self.pauseButton["state"] = DISABLED
-        
-        # self.quitButton = tk.Button(self, text='RESET', command=self.progressbar.reset)
-        # self.quitButton.grid(row=0, column=2)
-
-        # self.soundOnButton = tk.Button(self, text='Sound ON', bd='5',
-        #                              command=self.sound_ON)  # Create start, pause, and quit button.
-        # self.soundOnButton.place(x=150,y=400)
-        # self.soundOffButton = tk.Button(self, text='Sound OFF', command=self.sound_OFF)
-        # self.soundOffButton.place(x=300,y=400)
-
+        global quit_delay
+        quit_delay += 1
+        # print("ok ", quit_delay)
+        if (quit_delay > 2):
+            print("quit")
+            # os.system("sudo shutdown -h now")
 
     def hourup(self):
 
@@ -385,11 +379,13 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             self.hour= self.hour-1
             self.canvas.delete(self.hourtime)
             self.hourtime = self.canvas.create_text(70, 340, text=self.hour, font='Helevetica 15 bold', fill='green')
+    
     def minsup(self):
 
         self.minute= self.minute+1
         self.canvas.delete(self.mintime)
         self.mintime = self.canvas.create_text(845.0, 340.0, text=self.minute, font='Helevetica 26 bold', fill='green')
+    
     def minsdown(self):
         if self.minute>0:
             self.minute= self.minute-1
@@ -401,6 +397,7 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         self.sec= self.sec+1
         self.canvas.delete(self.sectime)
         self.sectime = self.canvas.create_text(845.0, 508.0, text=self.sec, font='Helevetica 26 bold', fill='green')
+    
     def secsdown(self):
         if self.sec>0:
             self.sec= self.sec-1
@@ -418,6 +415,7 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             
             if self.progressbar.running == True:  # once the start button is pressed, disable it until?...
                 
+                self.button_55["state"] = DISABLED
                 self.button_1["state"] = DISABLED
                 #self.startButton["state"] = DISABLED
                 # self.pauseButton["state"] = ACTIVE
