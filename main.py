@@ -16,11 +16,12 @@ OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 pygame.mixer.init()
-pygame.mixer.music.load('/home/admin/Downloads/UML-EECE-Capstone-guifix/alarm.mp3')
+# pygame.mixer.music.load('/home/admin/Downloads/UML-EECE-Capstone-guifix/alarm.mp3')
 
 stop_sound = False # states to manage the sound
 sound = False #
 quit_delay = 0
+cont = None
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -119,6 +120,7 @@ class CircularProgressbar(object):
 
 class Timer(tk.Tk):  # This class creates and manages all the widgets such as button, entry boxes, and the progressbar
 
+    cont = None
     def __init__(self, master=None):
         tk.Tk.__init__(self, master)
         self.createWidgets()
@@ -234,14 +236,15 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         # mins increment button
         self.button_image_increment = PhotoImage(
             file=relative_to_assets("increment.png"))
-        button_increment = Button(
+        self.button_increment = Button(
             image=self.button_image_increment,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.minsup(),
             relief="flat"
         )
-        button_increment.place(
+        self.button_increment.bind('<Button-1>', lambda event: self.minsup())
+        self.button_increment.bind('<ButtonRelease>', lambda event: self.stop_press())
+        self.button_increment.place(
             x=888.0,
             y=264.0,
             width=50.0,
@@ -260,14 +263,15 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         # mins decrement button
         self.button_image_decrement = PhotoImage(
             file=relative_to_assets("decrement.png"))
-        button_decrement = Button(
+        self.button_decrement = Button(
             image=self.button_image_decrement,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.minsdown(),
             relief="flat"
         )
-        button_decrement.place(
+        self.button_decrement.bind('<Button-1>', lambda event: self.minsdown())
+        self.button_decrement.bind('<ButtonRelease>', lambda event: self.stop_press())
+        self.button_decrement.place(
             x=888.0,
             y=366.0,
             width=50.0,
@@ -277,14 +281,15 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         # secs increment button
         self.button_image_increment_sec = PhotoImage(
             file=relative_to_assets("increment.png"))
-        button_increment_sec = Button(
+        self.button_increment_sec = Button(
             image=self.button_image_increment_sec,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.secsup(),
             relief="flat"
         )
-        button_increment_sec.place(
+        self.button_increment_sec.bind('<Button-1>', lambda event: self.secsup())
+        self.button_increment_sec.bind('<ButtonRelease>', lambda event: self.stop_press())
+        self.button_increment_sec.place(
             x=888.0,
             y=430.0,
             width=50.0,
@@ -303,14 +308,15 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
         # secs decrement button
         self.button_image_decrement_sec = PhotoImage(
             file=relative_to_assets("decrement.png"))
-        button_decrement_sec = Button(
+        self.button_decrement_sec = Button(
             image=self.button_image_decrement_sec,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.secsdown(),
             relief="flat"
         )
-        button_decrement_sec.place(
+        self.button_decrement_sec.bind('<Button-1>', lambda event: self.secsdown())
+        self.button_decrement_sec.bind('<ButtonRelease>', lambda event: self.stop_press())
+        self.button_decrement_sec.place(
             x=888.0,
             y=532.0,
             width=50.0,
@@ -366,30 +372,41 @@ class Timer(tk.Tk):  # This class creates and manages all the widgets such as bu
             self.hour= self.hour-1
             self.canvas.delete(self.hourtime)
             self.hourtime = self.canvas.create_text(70, 340, text=self.hour, font='Helevetica 15 bold', fill='green')
-    
-    def minsup(self):
 
+
+    def minsup(self):
+        global cont
         self.minute= self.minute+1
         self.canvas.delete(self.mintime)
         self.mintime = self.canvas.create_text(845.0, 340.0, text=self.minute, font='Helevetica 26 bold', fill='green')
+        cont = self.after(300, self.minsup)
     
     def minsdown(self):
+        global cont
         if self.minute>0:
             self.minute= self.minute-1
             self.canvas.delete(self.mintime)
             self.mintime = self.canvas.create_text(845.0, 340.0, text=self.minute, font='Helevetica 26 bold', fill='green')
+            cont = self.after(300, self.minsdown)
 
     def secsup(self):
-
+        global cont
         self.sec= self.sec+1
         self.canvas.delete(self.sectime)
         self.sectime = self.canvas.create_text(845.0, 508.0, text=self.sec, font='Helevetica 26 bold', fill='green')
-    
+        cont = self.after(300, self.secsup)
+
     def secsdown(self):
+        global cont
         if self.sec>0:
             self.sec= self.sec-1
             self.canvas.delete(self.sectime)
             self.sectime = self.canvas.create_text(845.0, 508.0, text=self.sec, font='Helevetica 26 bold', fill='green')
+            cont = self.after(300, self.secsdown)
+    
+    def stop_press(self):
+        global cont
+        self.after_cancel(cont)
 
     def start(self):  # Start button pressed, so start the countdown
 
